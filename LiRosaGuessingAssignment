@@ -1,0 +1,24 @@
+import java.util.Collections;
+
+/*LiRosaGuessingAssignment.java
+*This class creates a new instance of GuessingGame and calls on the play method inside that class. This allows the code to run and the user to play the game.
+* Finally, it outputs the instance of GuessingGame which allows the user to see their scores.
+* By: Rosa Li
+* Start Date: 01/04/2021
+* End Date: 01/06/2021
+*/
+public class LiRosaGuessingAssignment 
+{
+	//this method creates a new instance of GuessingGame, calls on the play method in GuessingGame class and outputs the scores of the players
+	public static void main(String[] args)
+	{
+		//creating new instance of GuessingGame
+		GuessingGame game1 = new GuessingGame();
+		//calling play method
+		GuessingGame.play();
+		//outputting scores
+		
+		System.out.println(game1);
+		
+	}
+}
