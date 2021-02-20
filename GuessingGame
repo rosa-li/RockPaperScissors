@@ -1,0 +1,241 @@
+/*GuessingGame.java
+*Class that declares instances of Player and allows player to play game. Players will choose a number between 0 and 10 and will score a point
+*if they guess the correct number (which is chosen by a random generator). User can choose if they would like to continue to play. At the end of the 
+*game the score of each player will be displayed.
+* By: Rosa Li
+* Start Date: 01/04/2021
+* End Date: 01/06/2021
+*/
+
+//importing ArrayList class
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.InputMismatchException;
+import java.util.List;
+//importing java.util.Scanner class
+import java.util.Scanner;
+
+public class GuessingGame 
+{
+	//declaring arraylist of type Player called players
+	static ArrayList<Player> players = new ArrayList<Player>();
+	
+	//declaring instance variables to store guess of player and random number from random number generator
+	static byte bytPlayerGuess, bytRandomNum;
+	
+	//default constructor that sets bytPlayerGuess and bytRandomNum to 0
+	public GuessingGame()
+	{
+		this.bytPlayerGuess = 0;
+		this.bytRandomNum = 0;
+	}
+	
+	//method that executes the guessing game
+	public static void play()
+	{
+		 
+		
+		//game instructions displayed to user
+				System.out.println("Welcome to Guessing Game! \nGame instructions:\nEnter the first and last names of all the players you "
+						+ "would like to have participate in the game. \nEach player will then have an opportunity to guess a number between "
+						+ "0 and 10. \nIf the player guesses correctly, then they will gain a point. You can choose how many times you would "
+						+ "\nlike to play the game. At the end of the game, the player with the most amount of points wins. \n\nPrize: bragging rights."
+						+ "\n\nNote: \nWhen asked a yes or no question, please type your answer in all lower case letters. \nWhen asked to enter"
+						+ " a number, please enter the numerical value (ie. '5' not 'five')");
+				
+		//calling toBegin() method so user can play game
+		toBegin();
+		
+		
+	}
+	
+	//method that asks user if they would like to begin. If they do, the appropriate methods are called so user can play
+	public static void toBegin()
+	{
+		String strStart;
+		
+		do {
+			System.out.println("Would you like to begin?");
+			strStart = new Scanner(System.in).nextLine();
+			if (strStart.equalsIgnoreCase("yes"))
+			{
+				addPlayer();
+				playGame();
+				strStart = "no";
+			}
+			else if (strStart.equalsIgnoreCase("no"))
+			{
+				System.out.println("We hope you come play later!");
+			}
+			else
+			{
+				System.out.println("Please enter 'yes' or 'no'");
+				strStart = new Scanner(System.in).nextLine();
+			}
+				
+			} while(strStart.equalsIgnoreCase("yes"));
+			
+	
+	}
+
+	/*method that adds players to arraylist called players and allows users to populate instance variables containing player's 
+	 *first and last name
+	 */
+	public static void addPlayer()
+	{
+		//variables that store player's first name, last name and if user wants to continue adding players
+		String strFName, strLName, strAddPlayer;
+		//variable that holds value and determines if do while loop terminates
+		boolean bolAddPlayer = true;
+		
+		//do while loop which prompts user to add more players and populates the instances of arraylist players
+		do
+		{
+			//prompting user if they would like to add a player to the game
+			System.out.println("Would you like to add a player to the game, 'yes' or 'no'? (there must be at least one player)");
+			//storing user input to strAddPlayer variable
+			strAddPlayer = new Scanner(System.in).nextLine();
+			
+			
+			//if statement that allows user to populate player object and add it to arraylist
+			if (strAddPlayer.equalsIgnoreCase("yes"))
+			{
+				System.out.println("Please enter the first name of the player");
+				strFName = new Scanner(System.in).nextLine();
+				System.out.println("Please enter the last name of the player");
+				strLName = new Scanner(System.in).nextLine();
+				
+				//capitalizing the first and last name of the player 
+				strFName = toCapitalize(strFName);
+				strLName = toCapitalize(strLName);
+				
+				players.add(new Player(strFName, strLName));
+				
+				
+				
+				//need to check if the user entered empty string
+			}
+			else if (strAddPlayer.equalsIgnoreCase("no"))
+			{
+				//if user chooses not to add more players, variable will be set to false to terminate do while loop
+				bolAddPlayer = false;
+			}
+			else
+			{
+				System.out.println("Please enter 'yes' or 'no'");
+			}
+		}
+		while(bolAddPlayer);
+		
+	}
+	
+	//method that asks allows user to play the guessing game and asks if the user wants to play again
+	public static void playGame()
+	{
+		
+		String strPlayAgain;
+		
+		//do while loop that allows user to choose if they want to continue to play
+		do
+		{
+			System.out.println("Would you like to continue playing?");
+			strPlayAgain = new Scanner(System.in).nextLine();
+			
+			
+			if (strPlayAgain.equalsIgnoreCase("yes"))
+			{
+				//calling game method
+				game();	
+				
+			}
+			else if (strPlayAgain.equalsIgnoreCase("no"))
+			{
+				System.out.println("Thank you for playing the game!");
+			}
+			else
+			{
+				System.out.println("Please enter 'yes' or 'no'");
+				strPlayAgain = new Scanner(System.in).nextLine();
+			}
+		}
+		while (strPlayAgain.equalsIgnoreCase("yes"));
+		
+
+	}
+		
+	/*method that generates random number, asks user to enter a number and determines if the user's guess matches the generated number. Method loops through
+	 * all elements of the arraylist
+	*/
+	public static void game()
+	{
+		//declaring local variable to store user's score
+		short shrScore;
+		boolean bolCorrectInput = false;
+		
+		//generating random number 
+		bytRandomNum = (byte)(Math.random() * 11);
+		
+		//for loop that allows every player to guess a number. 
+		for(int i=0; i<players.size(); i++)
+		{
+			
+				try 
+				{
+					bolCorrectInput = true;
+					System.out.print(players.get(i).getFName() + ", Please guess a number between 0 and 10");
+					bytPlayerGuess = new Scanner(System.in).nextByte();
+					
+					//if statement compares user's guess to the random number and outputs appropriate statement
+					if (bytPlayerGuess == bytRandomNum)
+					{
+						//getting score from Player class and adding 1 to the score
+						short shrCurrentScore = players.get(i).getScore();
+						players.get(i).setScore((short)(shrCurrentScore +1));
+						System.out.println("Yay! You guessed right!");
+					}
+					else
+					{
+						System.out.println("Sorry, you did not guess right.");
+					}
+					
+				}
+				catch(InputMismatchException e)
+				{
+					System.out.println("Invalid input. Please enter a numerical value");
+					bolCorrectInput = false;
+				}
+							
+			
+		}
+	}
+	
+	//method that capitalizes the first letter of the word
+	public static String toCapitalize(String name)
+	{
+		name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+		return name;
+		
+	}
+
+	
+	//to string method that outputs all of the player's first name, last name and score
+	public String toString()
+	{
+		//declaring and initializing strReturn variable
+		String strReturn="";
+		
+
+		//for loop that iterates through the arraylist to get the first name, last name and score of every player
+		for(Player x: players)
+		{
+			strReturn += x.getFName() + " "+ x.getLName() + " – Score: " + x.getScore() + "\n";
+			
+		}
+		
+		//returning toString
+		return strReturn;	
+	}
+	
+	
+	
+}
